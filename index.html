@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LCC Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logos">
+        <img class="logo" src="img/jonkoping_university.png" alt="Jönköping University logo" />
+        <img class="logo" src="img/jpet_logistic.png" alt="JPET logistic AB logo" />
+      </div>
+
+      <div class="titleblock">
+        <h1>LCC Calculator</h1>
+        <p>Life Cycle Cost (LCC) with annual costs + end-of-life decommissioning (discounted).</p>
+      </div>
+
+      <div class="warehouse" aria-hidden="true">
+        <svg viewBox="0 0 640 160" role="img">
+          <path d="M40 90 L220 30 L400 90 L400 140 L40 140 Z"></path>
+          <path d="M220 30 L220 140"></path>
+          <path d="M110 70 L110 140"></path>
+          <path d="M150 70 L150 140"></path>
+          <path d="M290 70 L290 140"></path>
+          <path d="M330 70 L330 140"></path>
+          <path d="M430 70 L600 40 L600 140 L430 140 Z"></path>
+          <path d="M470 85 L470 140"></path>
+          <path d="M520 80 L520 140"></path>
+        </svg>
+        <span>Construction / Warehouse</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Inputs</h2>
+
+      <form id="lccForm" class="grid" novalidate>
+
+        <div class="field">
+          <label>Initial cost (CAPEX)</label>
+          <div class="control">
+            <input name="initial_cost" type="number" step="0.01" min="0" required placeholder="SEK" />
+            <button type="button" class="info" data-help="Initial investment cost (installation + commissioning). Unit: SEK.">i</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Building area (BTA)</label>
+          <div class="control">
+            <input name="area" type="number" step="0.01" min="0" required placeholder="m²" />
+            <button type="button" class="info" data-help="Gross floor area (BTA). Unit: m².">i</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Lifespan</label>
+          <div class="control">
+            <input name="lifespan_n" type="number" step="1" min="1" required placeholder="years" />
+            <button type="button" class="info" data-help="Building/service life. Unit: years (integer).">i</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Discount rate</label>
+          <div class="control">
+            <input name="discount_rate_r" type="number" step="0.0001" min="0" required placeholder="0.03 or 3" />
+            <button type="button" class="info" data-help="Discount rate. Enter 0.03 for 3% OR enter 3 for 3%.">i</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Annual energy use</label>
+          <div class="control">
+            <input name="energy_use" type="number" step="0.01" min="0" required placeholder="kWh/m²/year" />
+            <button type="button" class="info" data-help="Operational energy intensity. Unit: kWh per m² per year.">i</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Annual CO₂ emissions</label>
+          <div class="control">
+            <input name="co2_emission" type="number" step="0.01" min="0" required placeholder="kgCO₂e/m²/year" />
+            <button type="button" class="info" data-help="Operational emissions intensity. Unit: kg CO₂e per m² per year.">i</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Energy price</label>
+          <div class="control">
+            <input name="energy_price" type="number" step="0.01" min="0" required placeholder="SEK/kWh" />
+            <button type="button" class="info" data-help="Electricity/energy price. Unit: SEK per kWh.">i</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Operation cost</label>
+          <div class="control">
+            <input name="operation_cost" type="number" step="0.01" min="0" required placeholder="SEK/m²/year" />
+            <button type="button" class="info" data-help="Annual operations cost excluding energy. Unit: SEK per m² per year.">i</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Maintenance & repairs</label>
+          <div class="control">
+            <input name="maintenance_repair" type="number" step="0.01" min="0" required placeholder="SEK/m²/year" />
+            <button type="button" class="info" data-help="Annual maintenance & repairs. Unit: SEK per m² per year.">i</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>CO₂ factor (monetization)</label>
+          <div class="control">
+            <input name="co2_factor" type="number" step="0.0001" min="0" required placeholder="SEK/kgCO₂e" />
+            <button type="button" class="info" data-help="Carbon price / shadow price. Unit: SEK per kg CO₂e (1 ton = 1000 kg).">i</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Decommissioning rate</label>
+          <div class="control">
+            <input name="decommissioning_rate" type="number" step="0.0001" min="0" required placeholder="0.10 = 10%" />
+            <button type="button" class="info" data-help="End-of-life decommissioning cost as fraction of CAPEX. Example: 0.10 = 10%.">i</button>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Calculate</button>
+          <button class="btn secondary" type="button" id="resetBtn">Reset</button>
+        </div>
+
+        <p id="errorBox" class="error hidden"></p>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Results</h2>
+      <div id="results" class="results muted">No results yet.</div>
+    </section>
+  </main>
+
+  <!-- Info modal -->
+  <div id="modalBackdrop" class="backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modalHeader">
+        <strong>Input info</strong>
+        <button type="button" id="closeModal" class="xbtn">✕</button>
+      </div>
+      <div id="modalBody" class="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
